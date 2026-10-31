@@ -86,6 +86,13 @@ The protocol was committed before any modelling code: [docs/evaluation_protocol.
   | 4 | 60.3% | 52.2% | 50.7% |
   | Mean ± SD | 61.8% ± 2.6% | 53.9% ± 1.4% | 50.4% |
 
+### Chart
+
+![Per-fold test accuracy](docs/images/fold_accuracy.png)
+
+Per-fold test accuracy on unseen participants, drawn by `scripts/plot_results.py` from `reports/eegnet_reduced.json`.
+Note that the axis starts at 40%.
+
 ## Limits
 
 **What the results do show (engineering):** under this frozen protocol, this CSP+LDA
