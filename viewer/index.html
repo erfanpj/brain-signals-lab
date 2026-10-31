@@ -56,7 +56,9 @@
         <h2 id="part-heading">Participants</h2>
         <p>
           Each row is one test participant in their outer fold. Accuracy below 50% is highlighted.
-          Holm correction is across 50 participants.
+          The lower bound comes from a one-sided binomial test (greater than chance); the stored
+          upper end is always 100% for that one-sided interval, not a two-sided CI. Holm adjustment
+          is across all 50 participants.
         </p>
         <div class="controls">
           <label>
@@ -116,6 +118,6 @@
       Viewer reads <code>reports/evaluation.json</code> and related artifacts only.
     </footer>
 
-    <script src="app.js?v=93ba6bf" defer></script>
+    <script src="app.js?v=t4-fixes" defer></script>
   </body>
 </html>

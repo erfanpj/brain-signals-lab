@@ -54,3 +54,17 @@ def test_eegnet_reduced_worse_than_csp_on_mean():
     ev = _load(MANIFEST["artifacts"]["evaluation"])
     assert nn["eegnet_r_fold_mean"] < ev["csp_lda_fold_mean"]
     assert "NOT the original EEGNet protocol" in nn["variant"]
+
+
+def test_viewer_fold_chart_uses_zero_to_one_accuracy_scale():
+    """Regression: Grok T4 — chart must not use a hidden 40% baseline."""
+    js = (VIEWER / "app.js").read_text(encoding="utf-8")
+    assert "- 0.4) * 300" not in js
+    assert "CHART_PLOT_H" in js
+    assert "accuracyBarHeight" in js
+
+
+def test_participant_ci_upper_is_one_in_saved_reports():
+    ev = _load(MANIFEST["artifacts"]["evaluation"])
+    for p in ev["participants"].values():
+        assert p["ci95"][1] == 1.0

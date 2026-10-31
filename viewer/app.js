@@ -8,8 +8,20 @@ const state = {
   manifest: null,
 };
 
+const CHART_PLOT_H = 180;
+
 function pct(x, digits = 1) {
   return `${(x * 100).toFixed(digits)}%`;
+}
+
+/** Accuracy difference or SD expressed as percentage points (not relative % change). */
+function ppPoints(rate, digits = 1) {
+  return `${(rate * 100).toFixed(digits)} pp`;
+}
+
+function accuracyBarHeight(acc) {
+  const clamped = Math.max(0, Math.min(1, acc));
+  return Math.max(2, clamped * CHART_PLOT_H);
 }
 
 function subjectLabel(id) {
@@ -62,10 +74,10 @@ function renderProtocolStats() {
     })
     .join("");
   document.getElementById("fold-table-wrap").innerHTML = `
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>Fold</th><th>Test participants</th><th>Note</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>
+    </table></div>
   `;
 }
 
@@ -73,31 +85,54 @@ function renderEvalSummary() {
   const ev = state.evaluation;
   const nn = state.eegnet;
   document.getElementById("eval-summary").innerHTML = `
-    <div class="stat"><div class="label">CSP+LDA mean ± SD</div><div class="value">${pct(ev.csp_lda_fold_mean)} ± ${pct(ev.csp_lda_fold_sd, 1).replace("%", "")} pp</div><div class="source">evaluation.json → csp_lda_fold_mean/sd</div></div>
-    <div class="stat"><div class="label">Chance dummy</div><div class="value">${pct(ev.chance_dummy_fold_mean)} ± ${pct(ev.chance_dummy_fold_sd, 1).replace("%", "")} pp</div><div class="source">evaluation.json</div></div>
-    <div class="stat"><div class="label">EEGNet-R mean ± SD</div><div class="value">${pct(nn.eegnet_r_fold_mean)} ± ${pct(nn.eegnet_r_fold_sd, 1).replace("%", "")} pp</div><div class="source">eegnet_reduced.json</div></div>
+    <div class="stat"><div class="label">CSP+LDA mean ± SD</div><div class="value">${pct(ev.csp_lda_fold_mean)} ± ${ppPoints(ev.csp_lda_fold_sd)}</div><div class="source">evaluation.json → csp_lda_fold_mean/sd</div></div>
+    <div class="stat"><div class="label">Chance dummy</div><div class="value">${pct(ev.chance_dummy_fold_mean)} ± ${ppPoints(ev.chance_dummy_fold_sd)}</div><div class="source">evaluation.json</div></div>
+    <div class="stat"><div class="label">EEGNet-R mean ± SD</div><div class="value">${pct(nn.eegnet_r_fold_mean)} ± ${ppPoints(nn.eegnet_r_fold_sd)}</div><div class="source">eegnet_reduced.json</div></div>
     <div class="stat"><div class="label">Participant median</div><div class="value">${pct(ev.participant_acc.median)}</div><div class="source">evaluation.json → participant_acc.median</div></div>
   `;
 
   const chart = document.getElementById("fold-chart");
-  const groups = Object.entries(ev.folds)
+  const foldEntries = Object.entries(ev.folds);
+  const ariaParts = [];
+  const groups = foldEntries
     .map(([foldId, f]) => {
-      const cspH = Math.max(4, (f.csp_lda_acc - 0.4) * 300);
-      const chH = Math.max(4, (f.chance_dummy_acc - 0.4) * 300);
       const nnFold = nn.folds[foldId];
-      const nnH = Math.max(4, (nnFold.eegnet_r_acc - 0.4) * 300);
+      const chH = accuracyBarHeight(f.chance_dummy_acc);
+      const cspH = accuracyBarHeight(f.csp_lda_acc);
+      const nnH = accuracyBarHeight(nnFold.eegnet_r_acc);
+      ariaParts.push(
+        `Fold ${foldId}: Dummy ${pct(f.chance_dummy_acc)}, CSP+LDA ${pct(f.csp_lda_acc)}, EEGNet-R ${pct(nnFold.eegnet_r_acc)}`,
+      );
       return `
         <div class="bar-group">
-          <div class="bars">
-            <div class="bar chance" style="height:${chH}px" title="Dummy ${pct(f.chance_dummy_acc)}"></div>
-            <div class="bar csp" style="height:${cspH}px" title="CSP+LDA ${pct(f.csp_lda_acc)}"></div>
-            <div class="bar nn" style="height:${nnH}px" title="EEGNet-R ${pct(nnFold.eegnet_r_acc)}"></div>
+          <div class="bars" style="height:${CHART_PLOT_H}px">
+            <div class="bar chance" style="height:${chH}px" title="Dummy ${pct(f.chance_dummy_acc)}"><span class="bar-value">${pct(f.chance_dummy_acc)}</span></div>
+            <div class="bar csp" style="height:${cspH}px" title="CSP+LDA ${pct(f.csp_lda_acc)}"><span class="bar-value">${pct(f.csp_lda_acc)}</span></div>
+            <div class="bar nn" style="height:${nnH}px" title="EEGNet-R ${pct(nnFold.eegnet_r_acc)}"><span class="bar-value">${pct(nnFold.eegnet_r_acc)}</span></div>
           </div>
-          <div class="caption">Fold ${foldId}<br/>CSP ${pct(f.csp_lda_acc)}</div>
+          <div class="caption">Fold ${foldId}</div>
         </div>`;
     })
     .join("");
-  chart.innerHTML = `<div class="bar-chart" role="img" aria-label="Fold accuracies">${groups}</div>`;
+  const yAxis = [100, 50, 0]
+    .map(
+      (tick) =>
+        `<div class="y-tick" style="bottom:${(tick / 100) * CHART_PLOT_H}px"><span>${tick}%</span></div>`,
+    )
+    .join("");
+  chart.innerHTML = `
+    <div class="fold-chart-block">
+      <div class="chart-legend" aria-hidden="true">
+        <span class="legend-item"><span class="swatch chance"></span> Dummy</span>
+        <span class="legend-item"><span class="swatch csp"></span> CSP+LDA</span>
+        <span class="legend-item"><span class="swatch nn"></span> EEGNet-R</span>
+      </div>
+      <p class="chart-scale-note">Bar heights use a 0–100% accuracy scale (chance = 50%).</p>
+      <div class="chart-plot-row">
+        <div class="y-axis" aria-hidden="true">${yAxis}</div>
+        <div class="bar-chart" role="img" aria-label="${ariaParts.join(". ")}">${groups}</div>
+      </div>
+    </div>`;
 
   const nnRows = Object.entries(ev.folds)
     .map(([foldId, f]) => {
@@ -108,15 +143,15 @@ function renderEvalSummary() {
         <td>${pct(f.csp_lda_acc)}</td>
         <td>${pct(nnF.eegnet_r_acc)}</td>
         <td>${pct(f.chance_dummy_acc)}</td>
-        <td>${pct(nnF.diff_vs_csp_lda, 1)}</td>
+        <td>${ppPoints(nnF.diff_vs_csp_lda, 1)}</td>
       </tr>`;
     })
     .join("");
   document.getElementById("nn-table-wrap").innerHTML = `
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>Fold</th><th>CSP config (train only)</th><th>CSP+LDA</th><th>EEGNet-R</th><th>Dummy</th><th>NN − CSP</th></tr></thead>
       <tbody>${nnRows}</tbody>
-    </table>
+    </table></div>
   `;
 }
 
@@ -144,7 +179,7 @@ function renderParticipants() {
           <td>${p.n}</td>
           <td>${p.correct}</td>
           <td>${pct(p.accuracy)}</td>
-          <td>${pct(p.ci95[0], 1)} – ${pct(p.ci95[1], 1)}</td>
+          <td>${pct(p.ci95[0], 1)} <span class="ci-note">(one-sided 95% LB)</span></td>
           <td>${pval < 0.001 ? pval.toExponential(2) : pval.toFixed(3)}</td>
           <td>${p.above_chance_holm ? "yes" : "no"}</td>
         </tr>`;
@@ -155,10 +190,10 @@ function renderParticipants() {
   const wrap = document.getElementById("participant-table-wrap");
   const draw = () => {
     wrap.innerHTML = `
-      <table>
-        <thead><tr><th>Participant</th><th>Fold</th><th>Trials</th><th>Correct</th><th>Accuracy</th><th>95% CI</th><th>p (vs 0.5)</th><th>Holm</th></tr></thead>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Participant</th><th>Fold</th><th>Trials</th><th>Correct</th><th>Accuracy</th><th>One-sided 95% lower bound</th><th>p (one-sided vs 0.5)</th><th>Holm (50 tests)</th></tr></thead>
         <tbody>${tbody()}</tbody>
-      </table>`;
+      </table></div>`;
   };
   draw();
   document.getElementById("filter-below").addEventListener("change", draw);

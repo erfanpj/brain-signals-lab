@@ -24,6 +24,11 @@ body {
   background: var(--bg);
   color: var(--ink);
   line-height: 1.5;
+  overflow-x: clip;
+}
+
+html {
+  overflow-x: clip;
 }
 
 header {
@@ -80,8 +85,10 @@ nav button:focus-visible {
 
 main {
   max-width: 1100px;
+  width: 100%;
   margin: 0 auto;
   padding: 1.25rem;
+  box-sizing: border-box;
 }
 
 .panel {
@@ -91,6 +98,8 @@ main {
   border-radius: var(--radius);
   padding: 1.25rem;
   box-shadow: var(--shadow);
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .panel.active {
@@ -165,19 +174,102 @@ tr.below-chance td:first-child {
 .chart-wrap {
   margin: 1rem 0;
   overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fold-chart-block {
+  min-width: min(100%, 520px);
+}
+
+.chart-scale-note {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.swatch.chance {
+  background: #94a3b8;
+}
+
+.swatch.csp {
+  background: var(--accent);
+}
+
+.swatch.nn {
+  background: var(--violet);
+}
+
+.chart-plot-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.y-axis {
+  position: relative;
+  width: 2.5rem;
+  flex-shrink: 0;
+  height: 180px;
+  border-right: 1px solid var(--border);
+}
+
+.y-tick {
+  position: absolute;
+  right: 0.35rem;
+  transform: translateY(50%);
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.y-tick span {
+  display: block;
+  text-align: right;
 }
 
 .bar-chart {
   display: flex;
   align-items: flex-end;
-  gap: 0.75rem;
+  gap: 0.5rem;
   min-height: 220px;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .bar-group {
-  flex: 1;
-  min-width: 72px;
+  flex: 1 1 72px;
+  min-width: 64px;
   text-align: center;
 }
 
@@ -187,11 +279,27 @@ tr.below-chance td:first-child {
   gap: 4px;
   align-items: flex-end;
   height: 180px;
+  border-bottom: 1px solid var(--border);
 }
 
 .bar {
-  width: 18px;
+  width: 16px;
   border-radius: 4px 4px 0 0;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.bar-value {
+  position: absolute;
+  top: -1.1rem;
+  font-size: 0.62rem;
+  color: var(--muted);
+  white-space: nowrap;
+  transform: rotate(-45deg);
+  transform-origin: bottom center;
+  pointer-events: none;
 }
 
 .bar.csp {
@@ -210,6 +318,12 @@ tr.below-chance td:first-child {
   font-size: 0.75rem;
   color: var(--muted);
   margin-top: 0.35rem;
+}
+
+.ci-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
 .note {
