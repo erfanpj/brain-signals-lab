@@ -112,7 +112,7 @@ python -m http.server 8765 --bind 127.0.0.1
 Open http://127.0.0.1:8765/viewer/ . See [viewer/README.md](viewer/README.md). No `pip install`
 is required for the viewer; it only serves static files and fetches committed JSON.
 
-**Public demo:** GitHub Pages from repository root — URL recorded in `README.md` after signed-out verification.
+**Public demo (verified 2026-10-31):** [https://erfanpj.github.io/brain-signals-lab/viewer/](https://erfanpj.github.io/brain-signals-lab/viewer/) — GitHub Pages serves the **repository root** on branch `main` so the viewer can fetch `../reports/` and `../splits/`. Code and saved results: [https://github.com/erfanpj/brain-signals-lab](https://github.com/erfanpj/brain-signals-lab) at commit `dec6e43e4c39662ff5cd7e8a07e0535c368d23e4`.
 
 ## Limits
 
