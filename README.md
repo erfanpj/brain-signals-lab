@@ -106,17 +106,13 @@ table excerpt, not all 50 rows).
 **Local run** (serve the **repository root**, not `viewer/` alone):
 
 ```powershell
-py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m http.server 8765 --bind 127.0.0.1
+python -m http.server 8765 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:8765/viewer/ . See [viewer/README.md](viewer/README.md).
+Open http://127.0.0.1:8765/viewer/ . See [viewer/README.md](viewer/README.md). No `pip install`
+is required for the viewer; it only serves static files and fetches committed JSON.
 
 **Public demo:** GitHub Pages from repository root — URL recorded in `README.md` after signed-out verification.
-
-The scientific pipeline was verified on **Python 3.13** (`pytest -q`: 21 passed, 1 skipped on
-the reviewed release commit). The viewer itself only needs a static HTTP server.
 
 ## Limits
 
@@ -150,15 +146,25 @@ is about ±3 points, and performance varies a lot between individuals.
 
 ## Reproduce (CPU only)
 
+Use **Python 3.13** for the scientific environment (full `pytest -q` was **21 passed, 1 skipped**
+on commit `f36f54fc9e5e0518648273a2c02684a9df470d2f`; later release-prep commits are docs-only and
+were not re-tested).
+
+```powershell
+py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts/fetch_data.py
+.\.venv\Scripts\python.exe scripts/inventory.py
+.\.venv\Scripts\python.exe scripts/sanity_checks.py
+.\.venv\Scripts\python.exe scripts/evaluate.py
+.\.venv\Scripts\python.exe scripts/summarize.py
+.\.venv\Scripts\python.exe -m pytest -q
 ```
-python -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python scripts/fetch_data.py      # 150 EDF files, 384,539,520 bytes, checksum-verified
-.venv/bin/python scripts/inventory.py       # -> reports/data_inventory.json
-.venv/bin/python scripts/sanity_checks.py   # -> reports/sanity_report.json, reports/sanity_summary.md
-.venv/bin/python scripts/evaluate.py        # -> reports/evaluation.json (about 2.5 CPU-min with 2 threads)
-.venv/bin/python scripts/summarize.py       # -> reports/evaluation_summary.md
-.venv/bin/python -m pytest -q
-# optional reduced EEGNet run (needs a CPU build of torch; not in requirements.txt; about 11 CPU-min):
+
+Unix-like shells can use `python3.13 -m venv .venv` and `.venv/bin/python` the same way. Optional
+reduced EEGNet run (needs torch; not in `requirements.txt`):
+
+```
 python scripts/prepare_nn_inputs.py && python scripts/eval_eegnet.py --run reduced && python scripts/summarize_eegnet.py
 ```
 
@@ -179,5 +185,9 @@ python scripts/prepare_nn_inputs.py && python scripts/eval_eegnet.py --run reduc
 Erfan Pirjahandideh wrote the evaluation pipeline with AI assistance (Grok Bot). The read-only
 **portfolio viewer** (`viewer/`) was added in a separate pass with AI assistance (Cursor /
 Composer). Every reported number comes from the scripts and JSON reports in this repository and
-was checked against them. Human review covered participant splits, pre-registration, and the
-public viewer before release.
+was checked against them.
+
+**Release review (automated):** Grok read-only reviews and Codex coordination checks in this
+portfolio programme verified splits, pre-registration wording, viewer presentation, and evidence
+PNG content. Erfan was away during those reviews; they are **not** a substitute for personal
+sign-off and do not claim human approval of every line.

@@ -14,14 +14,13 @@ The live URL is added here after signed-out verification (expected path: `/viewe
 From the repository root (parent of `viewer/`):
 
 ```powershell
-py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m http.server 8765 --bind 127.0.0.1
+python -m http.server 8765 --bind 127.0.0.1
 ```
 
 Open http://127.0.0.1:8765/viewer/
 
-Serving only the `viewer/` folder will fail because `fetch()` needs `../reports/`.
+Serving only the `viewer/` folder will fail because `fetch()` needs `../reports/`. No Python
+package install is required for the viewer.
 
 ## Sections
 
