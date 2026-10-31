@@ -92,3 +92,19 @@ rule apply.
   ignores the clustering of trials within participants, so the per-participant results
   carry more weight. NN vs CSP+LDA: per-fold differences, plus a two-sided Wilcoxon
   signed-rank test on the 50 paired participant accuracies, labelled exploratory.
+
+## Protocol addition 2: reduced EEGNet variant ("EEGNet-R"). Committed before any new fit.
+The coordinator decided on 31 Oct 2026 at 02:21 CET not to run the 45 CPU-minute protocol
+above. This is a **cheaper, pre-registered variant, not the original protocol**, and it is
+reported as such.
+- Everything is as in addition 1 (inputs, rejection, architecture, optimiser, seeds,
+  threads, 8 inner-validation participants per fold, statistics) except:
+  - **dropout is fixed at 0.25**, with no dropout search. The value is chosen a priori as
+    the smaller grid value; the timing fit's validation scores were never looked at;
+  - **at most 15 epochs**. The epoch count (1–15) is chosen as the best accuracy on the
+    inner-validation participants, with ties going to the earlier epoch. Then the model is
+    refit on all 40 training participants for that many epochs.
+- **Compute rule:** re-time ONE fold first (fold 0: the inner fit for 15 epochs plus a
+  15-epoch refit on all training participants, with no test prediction). Project ×5.
+  Launch the full run once only if the projection is ≤ 20 CPU-minutes. The cap is enforced
+  in code: the run aborts and writes no results past 20 CPU-minutes of process time.
