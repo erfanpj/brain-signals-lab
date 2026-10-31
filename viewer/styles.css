@@ -298,6 +298,9 @@ tr.below-chance td:first-child {
 .bar-group-plot {
   flex: 1 1 72px;
   min-width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .bar-group-plot .bars {
@@ -305,23 +308,17 @@ tr.below-chance td:first-child {
   justify-content: center;
   gap: 4px;
   align-items: flex-end;
+  width: 100%;
   height: 180px;
   border-bottom: 1px solid var(--border);
 }
 
-.bar-captions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.35rem;
-  min-width: min(100%, 520px);
-}
-
 .bar-caption {
-  flex: 1 1 72px;
-  min-width: 64px;
+  width: 100%;
   text-align: center;
   font-size: 0.75rem;
   color: var(--muted);
+  margin-top: 0.35rem;
 }
 
 .bar {

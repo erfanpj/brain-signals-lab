@@ -114,11 +114,9 @@ function renderEvalSummary() {
             <div class="bar csp" style="height:${cspH}px" title="CSP+LDA ${pct(f.csp_lda_acc)}"><span class="bar-value">${pct(f.csp_lda_acc)}</span></div>
             <div class="bar nn" style="height:${nnH}px" title="EEGNet-R ${pct(nnFold.eegnet_r_acc)}"><span class="bar-value">${pct(nnFold.eegnet_r_acc)}</span></div>
           </div>
+          <div class="bar-caption">Fold ${foldId}</div>
         </div>`;
     })
-    .join("");
-  const captions = foldEntries
-    .map(([foldId]) => `<div class="bar-caption">Fold ${foldId}</div>`)
     .join("");
   const yAxis = [100, 50, 0]
     .map((tick) => {
@@ -141,7 +139,6 @@ function renderEvalSummary() {
           <div class="bar-chart-plot" tabindex="0" role="region" aria-label="Per-fold accuracy bars; scroll horizontally on narrow screens">
             <div class="bar-chart" role="img" aria-label="${ariaParts.join(". ")}">${groups}</div>
           </div>
-          <div class="bar-captions">${captions}</div>
         </div>
       </div>
     </div>`;
