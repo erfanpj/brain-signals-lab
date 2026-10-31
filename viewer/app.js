@@ -31,7 +31,11 @@ async function loadJson(url) {
 function setPanel(name) {
   document.querySelectorAll("nav button").forEach((btn) => {
     const on = btn.dataset.panel === name;
-    btn.setAttribute("aria-current", on ? "page" : "false");
+    if (on) {
+      btn.setAttribute("aria-current", "page");
+    } else {
+      btn.removeAttribute("aria-current");
+    }
   });
   document.querySelectorAll(".panel").forEach((panel) => {
     const id = panel.id.replace("panel-", "");
