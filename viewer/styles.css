@@ -158,8 +158,12 @@ td {
 
 th {
   background: #f1f5f9;
-  position: sticky;
-  top: 3.2rem;
+}
+
+.table-scroll th,
+.bar-chart-plot th {
+  position: static;
+  top: auto;
 }
 
 tr.below-chance {
@@ -174,6 +178,7 @@ tr.below-chance td:first-child {
 .chart-wrap {
   margin: 1rem 0;
   overflow-x: auto;
+  overflow-y: visible;
   max-width: 100%;
   -webkit-overflow-scrolling: touch;
 }
@@ -182,6 +187,13 @@ tr.below-chance td:first-child {
   overflow-x: auto;
   max-width: 100%;
   -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll:focus-visible,
+.bar-chart-plot:focus-visible,
+.chart-wrap:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .fold-chart-block {
@@ -229,26 +241,33 @@ tr.below-chance td:first-child {
 
 .chart-plot-row {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.5rem;
   min-width: 0;
+  --chart-label-space: 1.15rem;
 }
 
 .y-axis {
   position: relative;
-  width: 2.5rem;
+  width: 2.75rem;
   flex-shrink: 0;
   height: 180px;
+  margin-top: var(--chart-label-space);
   border-right: 1px solid var(--border);
+  overflow: visible;
 }
 
 .y-tick {
   position: absolute;
   right: 0.35rem;
-  transform: translateY(50%);
+  transform: translateY(-50%);
   font-size: 0.72rem;
   color: var(--muted);
   line-height: 1;
+}
+
+.y-tick.tick-zero {
+  transform: translateY(-100%);
 }
 
 .y-tick span {
@@ -256,30 +275,53 @@ tr.below-chance td:first-child {
   text-align: right;
 }
 
+.bar-plot-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.bar-chart-plot {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  padding-top: var(--chart-label-space);
+}
+
 .bar-chart {
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
-  min-height: 220px;
-  padding: 0.5rem 0 0;
-  flex: 1;
-  min-width: 0;
-  overflow-x: auto;
+  min-width: min(100%, 520px);
+  overflow: visible;
 }
 
-.bar-group {
+.bar-group-plot {
   flex: 1 1 72px;
   min-width: 64px;
-  text-align: center;
 }
 
-.bar-group .bars {
+.bar-group-plot .bars {
   display: flex;
   justify-content: center;
   gap: 4px;
   align-items: flex-end;
   height: 180px;
   border-bottom: 1px solid var(--border);
+}
+
+.bar-captions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  min-width: min(100%, 520px);
+}
+
+.bar-caption {
+  flex: 1 1 72px;
+  min-width: 64px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 
 .bar {
@@ -312,12 +354,6 @@ tr.below-chance td:first-child {
 
 .bar.nn {
   background: var(--violet);
-}
-
-.bar-group .caption {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-top: 0.35rem;
 }
 
 .ci-note {
@@ -378,9 +414,5 @@ footer {
 @media (max-width: 640px) {
   header h1 {
     font-size: 1.25rem;
-  }
-
-  th {
-    top: 5.5rem;
   }
 }

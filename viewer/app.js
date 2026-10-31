@@ -28,6 +28,10 @@ function subjectLabel(id) {
   return `S${String(id).padStart(3, "0")}`;
 }
 
+function scrollRegionAttrs(label) {
+  return `class="table-scroll" tabindex="0" role="region" aria-label="${label}"`;
+}
+
 function bandLabel(selected) {
   if (!selected?.band_hz) return "—";
   const [lo, hi] = selected.band_hz;
@@ -74,7 +78,7 @@ function renderProtocolStats() {
     })
     .join("");
   document.getElementById("fold-table-wrap").innerHTML = `
-    <div class="table-scroll"><table>
+    <div ${scrollRegionAttrs("Frozen outer fold assignments; scroll horizontally on narrow screens")}><table>
       <thead><tr><th>Fold</th><th>Test participants</th><th>Note</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
@@ -104,21 +108,24 @@ function renderEvalSummary() {
         `Fold ${foldId}: Dummy ${pct(f.chance_dummy_acc)}, CSP+LDA ${pct(f.csp_lda_acc)}, EEGNet-R ${pct(nnFold.eegnet_r_acc)}`,
       );
       return `
-        <div class="bar-group">
-          <div class="bars" style="height:${CHART_PLOT_H}px">
+        <div class="bar-group-plot">
+          <div class="bars">
             <div class="bar chance" style="height:${chH}px" title="Dummy ${pct(f.chance_dummy_acc)}"><span class="bar-value">${pct(f.chance_dummy_acc)}</span></div>
             <div class="bar csp" style="height:${cspH}px" title="CSP+LDA ${pct(f.csp_lda_acc)}"><span class="bar-value">${pct(f.csp_lda_acc)}</span></div>
             <div class="bar nn" style="height:${nnH}px" title="EEGNet-R ${pct(nnFold.eegnet_r_acc)}"><span class="bar-value">${pct(nnFold.eegnet_r_acc)}</span></div>
           </div>
-          <div class="caption">Fold ${foldId}</div>
         </div>`;
     })
     .join("");
+  const captions = foldEntries
+    .map(([foldId]) => `<div class="bar-caption">Fold ${foldId}</div>`)
+    .join("");
   const yAxis = [100, 50, 0]
-    .map(
-      (tick) =>
-        `<div class="y-tick" style="bottom:${(tick / 100) * CHART_PLOT_H}px"><span>${tick}%</span></div>`,
-    )
+    .map((tick) => {
+      const cls = tick === 0 ? "y-tick tick-zero" : "y-tick";
+      const top = tick === 100 ? "0%" : tick === 50 ? "50%" : "100%";
+      return `<div class="${cls}" style="top:${top}"><span>${tick}%</span></div>`;
+    })
     .join("");
   chart.innerHTML = `
     <div class="fold-chart-block">
@@ -127,10 +134,15 @@ function renderEvalSummary() {
         <span class="legend-item"><span class="swatch csp"></span> CSP+LDA</span>
         <span class="legend-item"><span class="swatch nn"></span> EEGNet-R</span>
       </div>
-      <p class="chart-scale-note">Bar heights use a 0–100% accuracy scale (chance = 50%).</p>
+      <p class="chart-scale-note">Bar heights use a 0–100% accuracy scale (50% is mid-height on the axis).</p>
       <div class="chart-plot-row">
         <div class="y-axis" aria-hidden="true">${yAxis}</div>
-        <div class="bar-chart" role="img" aria-label="${ariaParts.join(". ")}">${groups}</div>
+        <div class="bar-plot-area">
+          <div class="bar-chart-plot" tabindex="0" role="region" aria-label="Per-fold accuracy bars; scroll horizontally on narrow screens">
+            <div class="bar-chart" role="img" aria-label="${ariaParts.join(". ")}">${groups}</div>
+          </div>
+          <div class="bar-captions">${captions}</div>
+        </div>
       </div>
     </div>`;
 
@@ -148,7 +160,7 @@ function renderEvalSummary() {
     })
     .join("");
   document.getElementById("nn-table-wrap").innerHTML = `
-    <div class="table-scroll"><table>
+    <div ${scrollRegionAttrs("CSP+LDA vs EEGNet-R per fold; scroll horizontally on narrow screens")}><table>
       <thead><tr><th>Fold</th><th>CSP config (train only)</th><th>CSP+LDA</th><th>EEGNet-R</th><th>Dummy</th><th>NN − CSP</th></tr></thead>
       <tbody>${nnRows}</tbody>
     </table></div>
@@ -190,7 +202,7 @@ function renderParticipants() {
   const wrap = document.getElementById("participant-table-wrap");
   const draw = () => {
     wrap.innerHTML = `
-      <div class="table-scroll"><table>
+      <div ${scrollRegionAttrs("Participant accuracies; scroll horizontally on narrow screens")}><table>
         <thead><tr><th>Participant</th><th>Fold</th><th>Trials</th><th>Correct</th><th>Accuracy</th><th>One-sided 95% lower bound</th><th>p (one-sided vs 0.5)</th><th>Holm (50 tests)</th></tr></thead>
         <tbody>${tbody()}</tbody>
       </table></div>`;

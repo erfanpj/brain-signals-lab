@@ -43,7 +43,7 @@
         <h2 id="eval-heading">Evaluation</h2>
         <div class="meta-grid" id="eval-summary"></div>
         <h3>Per-fold test accuracy (unseen participants)</h3>
-        <div class="chart-wrap" id="fold-chart" aria-label="Bar chart of fold accuracies"></div>
+        <div class="chart-wrap" id="fold-chart" tabindex="0" role="region" aria-label="Per-fold accuracy chart; scroll horizontally on narrow screens"></div>
         <h3>CSP+LDA vs reduced EEGNet (EEGNet-R)</h3>
         <p class="note warn">
           EEGNet-R is the pre-registered reduced variant (dropout 0.25, max 15 epochs). The original
@@ -118,6 +118,6 @@
       Viewer reads <code>reports/evaluation.json</code> and related artifacts only.
     </footer>
 
-    <script src="app.js?v=t4-fixes" defer></script>
+    <script src="app.js?v=t4-layout" defer></script>
   </body>
 </html>
