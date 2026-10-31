@@ -146,9 +146,10 @@ is about ±3 points, and performance varies a lot between individuals.
 
 ## Reproduce (CPU only)
 
-Use **Python 3.13** for the scientific environment (full `pytest -q` was **21 passed, 1 skipped**
-on commit `f36f54fc9e5e0518648273a2c02684a9df470d2f`; later release-prep commits are docs-only and
-were not re-tested).
+Use **Python 3.13** for the scientific environment. The last full-suite run reported **21 passed
+and 1 skipped** during the T4 fix pass ending at `4effcdc871764bf67edd273e7bb0391b14b989c9`.
+Subsequent viewer checks passed **8** tests; later image/documentation-only changes were not
+retested.
 
 ```powershell
 py -3.13 -m venv .venv
@@ -189,5 +190,4 @@ was checked against them.
 
 **Release review (automated):** Grok read-only reviews and Codex coordination checks in this
 portfolio programme verified splits, pre-registration wording, viewer presentation, and evidence
-PNG content. Erfan was away during those reviews; they are **not** a substitute for personal
-sign-off and do not claim human approval of every line.
+PNG content. These were automated reviews; independent human scientific validation is not claimed.
