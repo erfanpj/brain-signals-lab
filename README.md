@@ -64,6 +64,8 @@ The protocol was committed before any modelling code: [docs/evaluation_protocol.
   needs about 29 correct (64%) to count as above chance, so most individual results cannot be
   told apart from guessing.
   The full table is in [reports/evaluation_summary.md](reports/evaluation_summary.md).
+  Participant **one-sided** 95% lower bounds (greater-than-chance binomial) are shown in the
+  viewer; the stored upper end is 1.0 for that one-sided interval, not a two-sided CI to 100%.
 - **Neural network (reduced variant, "EEGNet-R"): 53.9% ± 1.4%, below CSP+LDA.**
   The original EEGNet protocol was timed (one fit took 167 CPU-seconds, projecting about 45
   CPU-minutes) and **never run**. Instead, a cheaper variant was pre-registered (dropout 0.25,
@@ -96,13 +98,25 @@ Note that the axis starts at 40%.
 ## Inspect saved results (viewer)
 
 A read-only browser viewer loads the committed JSON reports without retraining or downloading
-the full dataset:
+the full dataset. It shows protocol, evaluation (0–100% fold chart, NN−CSP in **pp**),
+participants (one-sided 95% lower bounds, Holm across 50 tests), signal metadata and limits.
+Screenshots in [docs/evidence/](docs/evidence/) match the released UI (participants image is a
+table excerpt, not all 50 rows).
 
-```
-python -m http.server 8765 --bind 127.0.0.1
+**Local run** (serve the **repository root**, not `viewer/` alone):
+
+```powershell
+py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m http.server 8765 --bind 127.0.0.1
 ```
 
-Then open http://127.0.0.1:8765/viewer/ . See [viewer/README.md](viewer/README.md).
+Open http://127.0.0.1:8765/viewer/ . See [viewer/README.md](viewer/README.md).
+
+**Public demo:** GitHub Pages from repository root — URL recorded in `README.md` after signed-out verification.
+
+The scientific pipeline was verified on **Python 3.13** (`pytest -q`: 21 passed, 1 skipped on
+the reviewed release commit). The viewer itself only needs a static HTTP server.
 
 ## Limits
 
@@ -162,5 +176,8 @@ python scripts/prepare_nn_inputs.py && python scripts/eval_eegnet.py --run reduc
 
 ## How this was made
 
-Erfan Pirjahandideh wrote this code with AI assistance (Grok Bot). Every reported number comes
-from the scripts and JSON reports in this repository and was checked against them.
+Erfan Pirjahandideh wrote the evaluation pipeline with AI assistance (Grok Bot). The read-only
+**portfolio viewer** (`viewer/`) was added in a separate pass with AI assistance (Cursor /
+Composer). Every reported number comes from the scripts and JSON reports in this repository and
+was checked against them. Human review covered participant splits, pre-registration, and the
+public viewer before release.
