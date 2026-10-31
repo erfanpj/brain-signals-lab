@@ -1,0 +1,74 @@
+{
+ "protocol": "outer K-fold over participants (leave-participants-out); every run of a participant stays in one fold",
+ "seed": 20261031,
+ "n_folds": 5,
+ "generator": "numpy.random.default_rng(seed).permutation(subject_ids); fold k = perm[k::5]",
+ "subset_config_sha256": "24c71fb3c8f940985350610cbe5f863e6b979db0fae00c7eebf9ad4e5e263ccd",
+ "folds": {
+  "0": [
+   6,
+   9,
+   16,
+   18,
+   19,
+   31,
+   36,
+   41,
+   43,
+   48
+  ],
+  "1": [
+   7,
+   11,
+   13,
+   24,
+   25,
+   32,
+   33,
+   39,
+   40,
+   44
+  ],
+  "2": [
+   1,
+   2,
+   4,
+   8,
+   15,
+   26,
+   27,
+   38,
+   42,
+   47
+  ],
+  "3": [
+   5,
+   12,
+   14,
+   20,
+   22,
+   30,
+   37,
+   45,
+   46,
+   50
+  ],
+  "4": [
+   3,
+   10,
+   17,
+   21,
+   23,
+   28,
+   29,
+   34,
+   35,
+   49
+  ]
+ },
+ "rules": [
+  "For outer fold k, test = folds[k], train = all other participants.",
+  "Preprocessing, feature and hyper-parameter choices are fit or tuned only on training participants (inner GroupKFold by participant).",
+  "Report every outer fold and every test participant; no fold is dropped or re-drawn."
+ ]
+}
