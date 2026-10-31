@@ -133,6 +133,7 @@ function renderParticipants() {
     return entries
       .map((p) => {
         const below = p.accuracy < 0.5;
+        const pval = p["p_binom_vs_0.5"];
         return `<tr class="${below ? "below-chance" : ""}">
           <td>${subjectLabel(p.id)}</td>
           <td>${p.fold}</td>
@@ -140,7 +141,7 @@ function renderParticipants() {
           <td>${p.correct}</td>
           <td>${pct(p.accuracy)}</td>
           <td>${pct(p.ci95[0], 1)} – ${pct(p.ci95[1], 1)}</td>
-          <td>${p.p_binom_vs_0.5 < 0.001 ? p.p_binom_vs_0.5.toExponential(2) : p.p_binom_vs_0.5.toFixed(3)}</td>
+          <td>${pval < 0.001 ? pval.toExponential(2) : pval.toFixed(3)}</td>
           <td>${p.above_chance_holm ? "yes" : "no"}</td>
         </tr>`;
       })
