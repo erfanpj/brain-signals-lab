@@ -56,3 +56,39 @@ public dataset subset. They are not claims about brain function.
   further normalisation. This is standard CSP, but it is not numerically identical to
   MNE's defaults (MNE estimates covariances by concatenating trials and orders
   components by mutual information).
+
+## Protocol addition: EEGNet-style comparison (P4.05). Committed before any NN code or run.
+Requested by the project coordinator on 31 Oct 2026, 02:15 CET. This supersedes the deferral note.
+The same frozen outer folds, the same 0.5–3.5 s window, and the same "training participants only"
+rule apply.
+- **Inputs (fixed, label-free):** each continuous run is zero-phase FIR band-passed at 4–38 Hz
+  and epoched 0–4 s like P4.02. The 5 too-short trials are excluded as before. The epochs are
+  cropped to 0.5–3.5 s and resampled to 80 Hz, giving 64 × 241 per trial. Amplitudes are
+  divided by one scalar, the standard deviation of the retained training trials of that fold.
+- **Training-only rejection:** the same Q3 + 3·IQR peak-to-peak rule, computed on these
+  inputs over training trials only. Test trials are never rejected.
+- **Model:** EEGNet-style (Lawhern et al., 2018): temporal conv F1 = 8 with kernel 40
+  (0.5 s), depthwise spatial conv D = 2, average-pool 4, separable conv F2 = 16 with
+  kernel 16, average-pool 8, linear classifier. ELU and batch norm. Adam (lr 1e-3), batch
+  size 64, cross-entropy, at most 30 epochs.
+- **Hyperparameters, chosen on training participants only:** dropout ∈ {0.25, 0.5} and
+  the number of epochs (1–30). In each outer fold, 8 of the 40 training participants
+  (seeded) are held out as inner validation. Each dropout value is trained on the other 32
+  and scored on the validation participants after every epoch. The dropout and epoch count
+  with the best validation accuracy are kept (ties go to the earlier epoch and to dropout
+  0.25). The model is then refit on all 40 training participants with those settings and
+  scores each test trial once.
+- **Seeds:** torch, numpy and the shuffling use seed 20261031 + fold, and deterministic
+  algorithms are enabled. Threads = 2.
+- **Compute rule:** first, time ONE fit (fold 0, one dropout value, inner train →
+  inner validation; no test data). Project 5 folds × (2 inner fits + 1 refit at about 1.25×
+  the data). Launch only if the projection is ≤ 20 CPU-minutes. The code aborts the run,
+  writing no results, if process CPU time passes 20 minutes. Run exactly once.
+- **Statistics:** per fold and per participant accuracy, next to CSP+LDA and the dummy
+  baseline. Per participant: exact binomial test against 0.5 with a 95% Clopper–Pearson
+  interval and Holm correction (as for CSP+LDA). **Difference:** a 100× permutation refit of
+  the NN would cost about 100× the run, so the per-fold chance reference for the NN is an
+  exact one-sided binomial test of the fold's pooled test trials against 0.5. That test
+  ignores the clustering of trials within participants, so the per-participant results
+  carry more weight. NN vs CSP+LDA: per-fold differences, plus a two-sided Wilcoxon
+  signed-rank test on the 50 paired participant accuracies, labelled exploratory.
