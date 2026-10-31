@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brain Signals Lab — saved results</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Brain Signals Lab</h1>
+      <p>
+        Read-only view of the frozen participant-split evaluation on PhysioNet motor imagery
+        (imagined left vs right fist). Numbers come from saved JSON reports in this repository;
+        opening this page does not train models or download the full EEG dataset.
+      </p>
+    </header>
+
+    <nav aria-label="Sections">
+      <button type="button" data-panel="protocol" aria-current="page">Protocol</button>
+      <button type="button" data-panel="evaluation">Evaluation</button>
+      <button type="button" data-panel="participants">Participants</button>
+      <button type="button" data-panel="signal">Signal metadata</button>
+      <button type="button" data-panel="limits">Limits</button>
+    </nav>
+
+    <main id="app">
+      <p id="load-status" role="status">Loading saved reports…</p>
+
+      <section id="panel-protocol" class="panel active" aria-labelledby="protocol-heading">
+        <h2 id="protocol-heading">Protocol</h2>
+        <div class="note">
+          Fixed before modelling: 5 outer folds over participants (10 test / 40 train each),
+          0.5–3.5&nbsp;s cue-locked window, CSP+LDA with inner grid on training participants only.
+          Full text: <code>docs/evaluation_protocol.md</code>.
+        </div>
+        <div class="meta-grid" id="protocol-stats"></div>
+        <h3>Frozen outer folds</h3>
+        <div id="fold-table-wrap"></div>
+      </section>
+
+      <section id="panel-evaluation" class="panel" aria-labelledby="eval-heading" hidden>
+        <h2 id="eval-heading">Evaluation</h2>
+        <div class="meta-grid" id="eval-summary"></div>
+        <h3>Per-fold test accuracy (unseen participants)</h3>
+        <div class="chart-wrap" id="fold-chart" aria-label="Bar chart of fold accuracies"></div>
+        <h3>CSP+LDA vs reduced EEGNet (EEGNet-R)</h3>
+        <p class="note warn">
+          EEGNet-R is the pre-registered reduced variant (dropout 0.25, max 15 epochs). The original
+          full EEGNet protocol was timed but not run. Full EEGNet was never executed.
+        </p>
+        <div id="nn-table-wrap"></div>
+      </section>
+
+      <section id="panel-participants" class="panel" aria-labelledby="part-heading" hidden>
+        <h2 id="part-heading">Participants</h2>
+        <p>
+          Each row is one test participant in their outer fold. Accuracy below 50% is highlighted.
+          Holm correction is across 50 participants.
+        </p>
+        <div class="controls">
+          <label>
+            <input type="checkbox" id="filter-below" />
+            Show only below 50% accuracy
+          </label>
+          <label>
+            Sort
+            <select id="sort-participants">
+              <option value="id">Participant ID</option>
+              <option value="acc-asc">Accuracy (low first)</option>
+              <option value="acc-desc">Accuracy (high first)</option>
+            </select>
+          </label>
+        </div>
+        <div id="participant-table-wrap"></div>
+      </section>
+
+      <section id="panel-signal" class="panel" aria-labelledby="signal-heading" hidden>
+        <h2 id="signal-heading">Signal metadata</h2>
+        <div class="note warn" id="signal-notice"></div>
+        <div class="meta-grid" id="signal-stats"></div>
+        <h3>Channel labels (64 scalp EEG)</h3>
+        <div class="channel-grid" id="channel-grid"></div>
+      </section>
+
+      <section id="panel-limits" class="panel" aria-labelledby="limits-heading" hidden>
+        <h2 id="limits-heading">Limits</h2>
+        <ul>
+          <li>
+            Engineering results for one CSP+LDA pipeline on 50 participants of one public subset.
+            Not clinical, assistive, or neuroscience conclusions.
+          </li>
+          <li>
+            Group mean above chance does not mean every person decodes well. Median participant
+            accuracy is about 58%; many individuals cannot be separated from guessing at this trial
+            count.
+          </li>
+          <li>
+            Test trials were scored without extra cleaning; training-only rejection removed 10–29
+            trials per fold.
+          </li>
+          <li>
+            Only five outer folds — fold SD is a rough spread measure, not a precise uncertainty on
+            the mean.
+          </li>
+          <li>
+            Neural comparison is EEGNet-R only; do not generalise to EEGNet or deep models in
+            general.
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      Data: PhysioNet EEG Motor Movement/Imagery v1.0.0 (ODC-By 1.0), not bundled here. Code: MIT.
+      Viewer reads <code>reports/evaluation.json</code> and related artifacts only.
+    </footer>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

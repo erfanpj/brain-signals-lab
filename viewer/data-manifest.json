@@ -1,0 +1,15 @@
+{
+  "description": "Artifacts loaded by the static viewer. Every displayed metric must trace to one of these files.",
+  "commit_baseline": "04c12a30bb412163eda7bb54f30a41c019f78c9c",
+  "artifacts": {
+    "evaluation": "reports/evaluation.json",
+    "eegnet_reduced": "reports/eegnet_reduced.json",
+    "frozen_folds": "splits/FROZEN_participant_folds.json",
+    "data_inventory": "reports/data_inventory.json",
+    "sanity_summary": "reports/sanity_summary.md"
+  },
+  "signal_viewer": {
+    "enabled": false,
+    "reason": "Raw EDF recordings are not redistributed (ODC-By 1.0). The Signal tab shows verified metadata only. Run scripts/fetch_data.py locally to inspect traces."
+  }
+}

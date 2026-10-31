@@ -93,6 +93,17 @@ The protocol was committed before any modelling code: [docs/evaluation_protocol.
 Per-fold test accuracy on unseen participants, drawn by `scripts/plot_results.py` from `reports/eegnet_reduced.json`.
 Note that the axis starts at 40%.
 
+## Inspect saved results (viewer)
+
+A read-only browser viewer loads the committed JSON reports without retraining or downloading
+the full dataset:
+
+```
+python -m http.server 8765 --bind 127.0.0.1
+```
+
+Then open http://127.0.0.1:8765/viewer/ . See [viewer/README.md](viewer/README.md).
+
 ## Limits
 
 **What the results do show (engineering):** under this frozen protocol, this CSP+LDA
