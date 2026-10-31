@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from bsl.eegnet import BudgetExceeded, predict, train  # noqa: E402
 
-SEED, MAX_EPOCHS, DROPOUTS, N_VAL, CAP_S = 20261031, 30, (0.25, 0.5), 8, 20 * 60
+SEED, N_VAL, CAP_S = 20261031, 8, 20 * 60
+VARIANTS = {"original": (30, (0.25, 0.5)), "reduced": (15, (0.25,))}   # max epochs, dropout grid
+MAX_EPOCHS, DROPOUTS = VARIANTS["original"]
 torch.set_num_threads(2)
 
 
@@ -33,10 +35,26 @@ def scaled(X, idx_fit, *idxs):
     return fit, int((~m).sum()), [X[i] / s for i in (fit, *idxs)]
 
 
-def main(mode):
+def main(mode, variant="original"):
+    global MAX_EPOCHS, DROPOUTS
+    MAX_EPOCHS, DROPOUTS = VARIANTS[variant]
     d = np.load(ROOT / "data/derived/nn_inputs.npz"); X, y, g = d["X"], d["y"], d["g"]
     folds = json.loads((ROOT / "splits/FROZEN_participant_folds.json").read_text())["folds"]
     t0 = time.process_time()
+    if mode == "--time-one-fold":            # inner fit + full-length refit for fold 0, no test prediction
+        tr, _, val_p = fold_data(X, y, g, folds, "0")
+        inner_tr, inner_va = tr[~np.isin(g[tr], val_p)], tr[np.isin(g[tr], val_p)]
+        fit, _, (Xf, Xv) = scaled(X, inner_tr, inner_va)
+        w0 = time.time()
+        for dp in DROPOUTS:
+            train(Xf, y[fit], dp, MAX_EPOCHS, SEED, Xv, y[inner_va], t0 + CAP_S)
+        fit, _, (Xf,) = scaled(X, tr)
+        train(Xf, y[fit], DROPOUTS[0], MAX_EPOCHS, SEED, cpu_deadline=t0 + CAP_S)
+        one = time.process_time() - t0
+        out = {"variant": variant, "max_epochs": MAX_EPOCHS, "dropouts": list(DROPOUTS), "one_fold_cpu_s": round(one, 1),
+               "one_fold_wall_s": round(time.time() - w0, 1), "projected_full_run_cpu_s": round(5 * one, 1),
+               "projection": "5 x measured fold 0 (worst case: refit at max epochs)", "cap_cpu_s": CAP_S, "launch": 5 * one <= CAP_S}
+        (ROOT / f"reports/eegnet_{variant}_timing.json").write_text(json.dumps(out, indent=1) + "\n"); print(out); return
     if mode == "--time-one-fit":
         tr, _, val_p = fold_data(X, y, g, folds, "0")
         inner_tr, inner_va = tr[~np.isin(g[tr], val_p)], tr[np.isin(g[tr], val_p)]
@@ -69,9 +87,10 @@ def main(mode):
         print(k, res["folds"][k]["selected"], round(time.process_time() - t0), "cpu-s", flush=True)
     res.update({"protocol": "docs/evaluation_protocol.md (EEGNet addition)", "seed": SEED, "torch": torch.__version__,
                 "threads": 2, "cpu_seconds": round(time.process_time() - t0, 1)})
-    (ROOT / "reports/eegnet_raw.json").write_text(json.dumps(res, indent=1) + "\n")
+    res["variant"] = variant
+    (ROOT / f"reports/eegnet_{variant}_raw.json").write_text(json.dumps(res, indent=1) + "\n")
     print("done", res["cpu_seconds"])
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "original")

@@ -33,7 +33,7 @@ L += ["", "## Limits", "",
       "- 50 of 109 participants and 3 runs each. One public dataset, so results may not carry over to other recordings or equipment.",
       "- One train/test protocol. The SD comes from only 5 folds. The inner grid scores are close together (about 58–65%), so the band choice matters little here.",
       "- Test trials are not cleaned, and the training-only rejection removed 10–29 trials per fold.",
-      "- This is a classical baseline. No neural network was evaluated on test participants: the EEGNet-style comparison was timed on training participants only and not launched (docs/neural_comparison_deferred.md).",
+      "- This is a classical baseline. A reduced EEGNet variant was compared under the same folds afterwards (reports/eegnet_reduced_summary.md); the original EEGNet protocol was not run.",
       f"- Compute: {r['cpu_seconds'] / 60:.1f} CPU-minutes for the final run (see the budget note in the repository history).", ""]
 (ROOT / "reports/evaluation_summary.md").write_text("\n".join(L))
 print("\n".join(L[:12]))

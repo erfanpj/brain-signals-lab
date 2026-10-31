@@ -43,3 +43,16 @@ def test_evaluation_report_consistent():
     assert all(f["test_participants"] for f in r["folds"].values())
     accs = [f["csp_lda_acc"] for f in r["folds"].values()]
     assert abs(np.mean(accs) - r["csp_lda_fold_mean"]) < 1e-4
+
+
+def test_eegnet_reduced_report_consistent():
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    r = json.loads((root / "reports/eegnet_reduced.json").read_text())
+    raw = json.loads((root / "reports/eegnet_reduced_raw.json").read_text())
+    assert sum(f["n_test_trials"] for f in raw["folds"].values()) == 2245
+    assert sum(v["n"] for v in raw["participants"].values()) == 2245 and len(raw["participants"]) == 50
+    assert raw["cpu_seconds"] <= 1200 and raw["variant"] == "reduced"
+    assert all(f["selected"]["dropout"] == 0.25 and 1 <= f["selected"]["epochs"] <= 15 for f in raw["folds"].values())
+    assert abs(np.mean([f["eegnet_r_acc"] for f in r["folds"].values()]) - r["eegnet_r_fold_mean"]) < 1e-4

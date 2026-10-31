@@ -1,0 +1,462 @@
+{
+ "folds": {
+  "0": {
+   "validation_participants": [
+    5,
+    10,
+    14,
+    26,
+    32,
+    38,
+    42,
+    46
+   ],
+   "selected": {
+    "dropout": 0.25,
+    "epochs": 15
+   },
+   "inner_val_best_acc": 0.5722,
+   "inner_val_curves": {
+    "0.25": [
+     0.525,
+     0.5333,
+     0.5139,
+     0.5,
+     0.5278,
+     0.5528,
+     0.5361,
+     0.5306,
+     0.5389,
+     0.5361,
+     0.5389,
+     0.5444,
+     0.5444,
+     0.5472,
+     0.5722
+    ]
+   },
+   "n_train_trials": 1796,
+   "n_train_rejected": 0,
+   "n_test_trials": 449,
+   "correct": 251
+  },
+  "1": {
+   "validation_participants": [
+    2,
+    10,
+    12,
+    17,
+    19,
+    27,
+    34,
+    50
+   ],
+   "selected": {
+    "dropout": 0.25,
+    "epochs": 11
+   },
+   "inner_val_best_acc": 0.5056,
+   "inner_val_curves": {
+    "0.25": [
+     0.4302,
+     0.4581,
+     0.4581,
+     0.4553,
+     0.4916,
+     0.4721,
+     0.4637,
+     0.4665,
+     0.4804,
+     0.4721,
+     0.5056,
+     0.5,
+     0.4888,
+     0.4916,
+     0.4721
+    ]
+   },
+   "n_train_trials": 1795,
+   "n_train_rejected": 0,
+   "n_test_trials": 450,
+   "correct": 239
+  },
+  "2": {
+   "validation_participants": [
+    6,
+    7,
+    16,
+    19,
+    24,
+    31,
+    37,
+    49
+   ],
+   "selected": {
+    "dropout": 0.25,
+    "epochs": 9
+   },
+   "inner_val_best_acc": 0.5642,
+   "inner_val_curves": {
+    "0.25": [
+     0.5196,
+     0.5363,
+     0.5196,
+     0.5419,
+     0.5447,
+     0.5196,
+     0.5363,
+     0.5363,
+     0.5642,
+     0.5642,
+     0.5587,
+     0.5475,
+     0.5447,
+     0.5587,
+     0.5503
+    ]
+   },
+   "n_train_trials": 1795,
+   "n_train_rejected": 0,
+   "n_test_trials": 450,
+   "correct": 244
+  },
+  "3": {
+   "validation_participants": [
+    19,
+    25,
+    31,
+    34,
+    35,
+    41,
+    44,
+    49
+   ],
+   "selected": {
+    "dropout": 0.25,
+    "epochs": 12
+   },
+   "inner_val_best_acc": 0.5938,
+   "inner_val_curves": {
+    "0.25": [
+     0.5014,
+     0.5462,
+     0.5182,
+     0.5378,
+     0.5602,
+     0.5546,
+     0.5854,
+     0.5742,
+     0.5602,
+     0.5742,
+     0.5742,
+     0.5938,
+     0.563,
+     0.5854,
+     0.5798
+    ]
+   },
+   "n_train_trials": 1797,
+   "n_train_rejected": 0,
+   "n_test_trials": 448,
+   "correct": 243
+  },
+  "4": {
+   "validation_participants": [
+    4,
+    5,
+    8,
+    22,
+    26,
+    30,
+    31,
+    33
+   ],
+   "selected": {
+    "dropout": 0.25,
+    "epochs": 7
+   },
+   "inner_val_best_acc": 0.5806,
+   "inner_val_curves": {
+    "0.25": [
+     0.5056,
+     0.5444,
+     0.5528,
+     0.5472,
+     0.5583,
+     0.5639,
+     0.5806,
+     0.5639,
+     0.5583,
+     0.5778,
+     0.5583,
+     0.5583,
+     0.5583,
+     0.5694,
+     0.5694
+    ]
+   },
+   "n_train_trials": 1797,
+   "n_train_rejected": 1,
+   "n_test_trials": 448,
+   "correct": 234
+  }
+ },
+ "participants": {
+  "6": {
+   "fold": 0,
+   "n": 45,
+   "correct": 29
+  },
+  "9": {
+   "fold": 0,
+   "n": 45,
+   "correct": 25
+  },
+  "16": {
+   "fold": 0,
+   "n": 45,
+   "correct": 30
+  },
+  "18": {
+   "fold": 0,
+   "n": 45,
+   "correct": 24
+  },
+  "19": {
+   "fold": 0,
+   "n": 45,
+   "correct": 21
+  },
+  "31": {
+   "fold": 0,
+   "n": 45,
+   "correct": 32
+  },
+  "36": {
+   "fold": 0,
+   "n": 45,
+   "correct": 22
+  },
+  "41": {
+   "fold": 0,
+   "n": 44,
+   "correct": 22
+  },
+  "43": {
+   "fold": 0,
+   "n": 45,
+   "correct": 21
+  },
+  "48": {
+   "fold": 0,
+   "n": 45,
+   "correct": 25
+  },
+  "7": {
+   "fold": 1,
+   "n": 45,
+   "correct": 27
+  },
+  "11": {
+   "fold": 1,
+   "n": 45,
+   "correct": 22
+  },
+  "13": {
+   "fold": 1,
+   "n": 45,
+   "correct": 20
+  },
+  "24": {
+   "fold": 1,
+   "n": 45,
+   "correct": 23
+  },
+  "25": {
+   "fold": 1,
+   "n": 45,
+   "correct": 24
+  },
+  "32": {
+   "fold": 1,
+   "n": 45,
+   "correct": 25
+  },
+  "33": {
+   "fold": 1,
+   "n": 45,
+   "correct": 32
+  },
+  "39": {
+   "fold": 1,
+   "n": 45,
+   "correct": 24
+  },
+  "40": {
+   "fold": 1,
+   "n": 45,
+   "correct": 18
+  },
+  "44": {
+   "fold": 1,
+   "n": 45,
+   "correct": 24
+  },
+  "1": {
+   "fold": 2,
+   "n": 45,
+   "correct": 28
+  },
+  "2": {
+   "fold": 2,
+   "n": 45,
+   "correct": 21
+  },
+  "4": {
+   "fold": 2,
+   "n": 45,
+   "correct": 23
+  },
+  "8": {
+   "fold": 2,
+   "n": 45,
+   "correct": 23
+  },
+  "15": {
+   "fold": 2,
+   "n": 45,
+   "correct": 22
+  },
+  "26": {
+   "fold": 2,
+   "n": 45,
+   "correct": 26
+  },
+  "27": {
+   "fold": 2,
+   "n": 45,
+   "correct": 26
+  },
+  "38": {
+   "fold": 2,
+   "n": 45,
+   "correct": 25
+  },
+  "42": {
+   "fold": 2,
+   "n": 45,
+   "correct": 25
+  },
+  "47": {
+   "fold": 2,
+   "n": 45,
+   "correct": 25
+  },
+  "5": {
+   "fold": 3,
+   "n": 45,
+   "correct": 21
+  },
+  "12": {
+   "fold": 3,
+   "n": 45,
+   "correct": 25
+  },
+  "14": {
+   "fold": 3,
+   "n": 45,
+   "correct": 25
+  },
+  "20": {
+   "fold": 3,
+   "n": 45,
+   "correct": 26
+  },
+  "22": {
+   "fold": 3,
+   "n": 45,
+   "correct": 20
+  },
+  "30": {
+   "fold": 3,
+   "n": 45,
+   "correct": 25
+  },
+  "37": {
+   "fold": 3,
+   "n": 43,
+   "correct": 21
+  },
+  "45": {
+   "fold": 3,
+   "n": 45,
+   "correct": 26
+  },
+  "46": {
+   "fold": 3,
+   "n": 45,
+   "correct": 28
+  },
+  "50": {
+   "fold": 3,
+   "n": 45,
+   "correct": 26
+  },
+  "3": {
+   "fold": 4,
+   "n": 45,
+   "correct": 25
+  },
+  "10": {
+   "fold": 4,
+   "n": 45,
+   "correct": 25
+  },
+  "17": {
+   "fold": 4,
+   "n": 45,
+   "correct": 23
+  },
+  "21": {
+   "fold": 4,
+   "n": 45,
+   "correct": 24
+  },
+  "23": {
+   "fold": 4,
+   "n": 45,
+   "correct": 22
+  },
+  "28": {
+   "fold": 4,
+   "n": 45,
+   "correct": 20
+  },
+  "29": {
+   "fold": 4,
+   "n": 45,
+   "correct": 21
+  },
+  "34": {
+   "fold": 4,
+   "n": 43,
+   "correct": 24
+  },
+  "35": {
+   "fold": 4,
+   "n": 45,
+   "correct": 27
+  },
+  "49": {
+   "fold": 4,
+   "n": 45,
+   "correct": 23
+  }
+ },
+ "protocol": "docs/evaluation_protocol.md (EEGNet addition)",
+ "seed": 20261031,
+ "torch": "2.15.0+cpu",
+ "threads": 2,
+ "cpu_seconds": 672.0,
+ "variant": "reduced"
+}

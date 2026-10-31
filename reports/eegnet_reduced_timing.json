@@ -1,0 +1,13 @@
+{
+ "variant": "reduced",
+ "max_epochs": 15,
+ "dropouts": [
+  0.25
+ ],
+ "one_fold_cpu_s": 172.0,
+ "one_fold_wall_s": 88.3,
+ "projected_full_run_cpu_s": 859.8,
+ "projection": "5 x measured fold 0 (worst case: refit at max epochs)",
+ "cap_cpu_s": 1200,
+ "launch": true
+}

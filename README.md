@@ -64,13 +64,27 @@ The protocol was committed before any modelling code: [docs/evaluation_protocol.
   needs about 29 correct (64%) to count as above chance, so most individual results cannot be
   told apart from guessing.
   The full table is in [reports/evaluation_summary.md](reports/evaluation_summary.md).
-- **Neural network: full evaluation not run.** An EEGNet-style comparison was pre-registered
-  under the same frozen protocol and timed first. The only network trained was one timing fit on
-  training participants (167 CPU-seconds), which projected the full 5-fold run at about 45
-  CPU-minutes, over the 20-minute cap. Under the pre-registered rule the run was not launched,
-  so no network was scored on test participants and no network result exists
-  ([docs/neural_comparison_deferred.md](docs/neural_comparison_deferred.md),
-  [reports/eegnet_timing.json](reports/eegnet_timing.json)).
+- **Neural network (reduced variant, "EEGNet-R"): 53.9% ± 1.4%, below CSP+LDA.**
+  The original EEGNet protocol was timed (one fit took 167 CPU-seconds, projecting about 45
+  CPU-minutes) and **never run**. Instead, a cheaper variant was pre-registered (dropout 0.25,
+  at most 15 epochs, epoch count chosen on validation participants), re-timed (14.3 CPU-minutes
+  projected) and run once (11.2 CPU-minutes) on the same frozen folds.
+  It is lower than CSP+LDA in every fold (by 4–11 points). Per participant, the median is
+  54.4%; 4 participants are above chance
+  uncorrected and 0 after Holm. Paired with CSP+LDA, CSP+LDA is
+  better for 33 of 50 participants (exploratory Wilcoxon p ≈ 2e-04).
+  This is a result about **this reduced, briefly trained configuration**, not about EEGNet or
+  neural networks in general. Details and per-participant table:
+  [reports/eegnet_reduced_summary.md](reports/eegnet_reduced_summary.md).
+
+  | Fold | CSP+LDA | EEGNet-R (reduced) | Chance baseline |
+  |---|---|---|---|
+  | 0 | 61.5% | 55.9% | 50.8% |
+  | 1 | 64.2% | 53.1% | 49.6% |
+  | 2 | 64.7% | 54.2% | 51.1% |
+  | 3 | 58.5% | 54.2% | 50.0% |
+  | 4 | 60.3% | 52.2% | 50.7% |
+  | Mean ± SD | 61.8% ± 2.6% | 53.9% ± 1.4% | 50.4% |
 
 ## Limits
 
@@ -98,6 +112,9 @@ is about ±3 points, and performance varies a lot between individuals.
 - The CSP is a covariance-based implementation, not MNE's default (see the deviation log).
 - The first evaluation attempt went over its compute budget and was stopped before any
   result was seen. The evaluation ran to completion exactly once.
+- The neural comparison is a reduced variant: one seed per fold, no dropout search, and at
+  most 15 epochs (fold 0 picked the maximum). Its per-fold chance test (a pooled binomial) is
+  weaker than the permutation test used for CSP+LDA.
 
 ## Reproduce (CPU only)
 
@@ -109,8 +126,8 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/evaluate.py        # -> reports/evaluation.json (about 2.5 CPU-min with 2 threads)
 .venv/bin/python scripts/summarize.py       # -> reports/evaluation_summary.md
 .venv/bin/python -m pytest -q
-# optional NN timing (needs a CPU build of torch; not in requirements.txt):
-python scripts/prepare_nn_inputs.py && python scripts/eval_eegnet.py --time-one-fit
+# optional reduced EEGNet run (needs a CPU build of torch; not in requirements.txt; about 11 CPU-min):
+python scripts/prepare_nn_inputs.py && python scripts/eval_eegnet.py --run reduced && python scripts/summarize_eegnet.py
 ```
 
 `scripts/make_splits.py` only confirms the frozen split; it refuses to produce a different one.
