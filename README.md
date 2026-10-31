@@ -14,3 +14,22 @@ classification or neuroscience claims.
   PhysioNet's checksums.
 - Licence: the code is MIT ([LICENSE](LICENSE)). The licence does not cover the dataset,
   which stays under its own ODC-By 1.0 licence and must be cited (see DATA.md).
+
+## Reproduce (CPU only)
+
+```
+python -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/fetch_data.py      # 150 EDF files, about 385 MB, checksum-verified
+.venv/bin/python scripts/inventory.py       # -> reports/data_inventory.json (P4.01)
+.venv/bin/python scripts/sanity_checks.py   # -> reports/sanity_report.json, reports/sanity_summary.md (P4.02)
+.venv/bin/python -m pytest -q
+```
+
+The participant-level outer folds were frozen in `splits/FROZEN_participant_folds.json`
+(commit "Freeze participant-level outer folds…") before any modelling code existed.
+`scripts/make_splits.py` refuses to produce a different split.
+
+## How this was made
+
+Erfan Pirjahandideh wrote this code with AI assistance (Grok Bot), and every reported number
+comes from running the scripts above.
