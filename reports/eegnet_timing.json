@@ -1,0 +1,10 @@
+{
+ "one_fit_cpu_s": 167.0,
+ "one_fit_wall_s": 85.7,
+ "inner_train_trials": 1436,
+ "epochs": 30,
+ "projection": "5 folds x (2 inner fits + 1 refit scaled by trials)",
+ "projected_full_run_cpu_s": 2698.7,
+ "cap_cpu_s": 1200,
+ "launch": false
+}

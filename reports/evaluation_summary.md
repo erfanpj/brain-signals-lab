@@ -76,5 +76,5 @@ Per test participant (n = 50): median accuracy 57.8% (range 44.4%–97.8%). 20 p
 - 50 of 109 participants and 3 runs each. One public dataset, so results may not carry over to other recordings or equipment.
 - One train/test protocol. The SD comes from only 5 folds. The inner grid scores are close together (about 58–65%), so the band choice matters little here.
 - Test trials are not cleaned, and the training-only rejection removed 10–29 trials per fold.
-- This is a classical baseline. No neural network was trained (P4.05 decides on that separately).
+- This is a classical baseline. No neural network was evaluated on test participants: the EEGNet-style comparison was timed on training participants only and not launched (docs/neural_comparison_deferred.md).
 - Compute: 2.5 CPU-minutes for the final run (see the budget note in the repository history).

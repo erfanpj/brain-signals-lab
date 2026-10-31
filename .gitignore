@@ -3,3 +3,4 @@ data/SHA256SUMS.txt
 __pycache__/
 *.pyc
 .pytest_cache/
+data/derived/

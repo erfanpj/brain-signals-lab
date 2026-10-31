@@ -64,8 +64,13 @@ The protocol was committed before any modelling code: [docs/evaluation_protocol.
   needs about 29 correct (64%) to count as above chance, so most individual results cannot be
   told apart from guessing.
   The full table is in [reports/evaluation_summary.md](reports/evaluation_summary.md).
-- **Not done:** no neural-network comparison was run. It is deferred, for the reasons in
-  [docs/neural_comparison_deferred.md](docs/neural_comparison_deferred.md).
+- **Neural network: full evaluation not run.** An EEGNet-style comparison was pre-registered
+  under the same frozen protocol and timed first. The only network trained was one timing fit on
+  training participants (167 CPU-seconds), which projected the full 5-fold run at about 45
+  CPU-minutes, over the 20-minute cap. Under the pre-registered rule the run was not launched,
+  so no network was scored on test participants and no network result exists
+  ([docs/neural_comparison_deferred.md](docs/neural_comparison_deferred.md),
+  [reports/eegnet_timing.json](reports/eegnet_timing.json)).
 
 ## Limits
 
@@ -104,6 +109,8 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/evaluate.py        # -> reports/evaluation.json (about 2.5 CPU-min with 2 threads)
 .venv/bin/python scripts/summarize.py       # -> reports/evaluation_summary.md
 .venv/bin/python -m pytest -q
+# optional NN timing (needs a CPU build of torch; not in requirements.txt):
+python scripts/prepare_nn_inputs.py && python scripts/eval_eegnet.py --time-one-fit
 ```
 
 `scripts/make_splits.py` only confirms the frozen split; it refuses to produce a different one.

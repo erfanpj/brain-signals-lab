@@ -1,17 +1,27 @@
-# Neural-network comparison: deferred (P4.05)
+# Neural-network comparison (P4.05): timed and still deferred
 
-Decided on 31 Oct 2026: **no neural network was trained, and this repository claims no neural
-result.**
+**Status: no neural-network result exists, and this repository does not claim one.**
 
-Reasons:
-1. The classical baseline comes first. CSP+LDA on unseen participants is the reference that any
-   neural model would have to beat under the same frozen folds and the same protocol.
-2. Compute discipline. The baseline's first evaluation run went far over its logged CPU budget
-   and was stopped (see the deviation log in `docs/evaluation_protocol.md`). A neural comparison
-   on CPU would cost much more again, so it will not be started without a budget based on a
-   timed single fit.
+History:
+1. **First decision (31 Oct 2026):** defer the comparison. The classical baseline comes first,
+   and a CPU budget based on a timed single fit is needed beforehand, because the baseline's
+   first evaluation run went far over its budget (see the deviation log).
+2. **Timed attempt (31 Oct 2026, superseding the first note):** an EEGNet-style protocol was
+   added to `docs/evaluation_protocol.md` before any NN code was written. It uses the same
+   frozen folds, with dropout and epoch count chosen on training participants only and fixed
+   seeds. Then ONE fit was timed. This was the only network ever trained: fold 0, dropout 0.25, 1436 inner-training trials, 30 epochs,
+   2 CPU threads, inner validation only and no test data
+   ([reports/eegnet_timing.json](../reports/eegnet_timing.json)).
+   - One fit took **167 CPU-seconds** (86 s wall).
+   - The full run needs 5 folds × (2 selection fits + 1 refit). That projects to **about 45
+     CPU-minutes**, more than the 20 CPU-minute cap.
+   - Following the pre-registered rule, **the full run was not launched**. No test fold was ever
+     scored by the network.
 
-How to revisit: use the same frozen participant folds, the same 0.5–3.5 s window and the same
-training-only selection rules, with a compact model (for example an EEGNet-style network). First
-time one training fit on one outer fold, log a budget from that measurement, and then report
-every fold next to the CSP+LDA and chance results.
+To revisit, two routes stay within the same protocol spirit: (a) agree a larger budget (about
+45 CPU-minutes) for the protocol exactly as written, or (b) pre-register a cheaper variant (for
+example fewer epochs or one dropout value), time it again, and launch only if it fits.
+`scripts/eval_eegnet.py --run` already enforces the cap in code.
+
+Implementation note: the inputs are 64 × 240 samples per trial, not the 241 stated in the
+protocol addition (0.5–3.5 s at 160 Hz resampled to 80 Hz gives 240 samples in MNE).
